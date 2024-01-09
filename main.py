@@ -12,8 +12,15 @@ from kivy.uix.label import Label
 import random
 import math
 
-#print(Window.size[0])
-squaresize1 = (Window.size[0] + Window.size[1]) / 60
+#print(asd[0])
+#print(Window.size[1])
+#squaresize1 = (asd[0] + asd[1]) * 0.025
+#print(asd[0] + asd[1])
+#squaresize2 = (asd[0] + asd[1]) * 0.015
+
+squaresize = Window.width * 0.023
+squaresize2 =  Window.width * 0.023
+
 speed = 0.25
 
 '''
@@ -100,14 +107,12 @@ obj = {
 
 main_menu = BoxLayout(orientation='vertical') #horizontal
 
-label = Label(text="Score: 0", size_hint = [.5, 0.25], font_size = 30)
+#label = Label(text="Score: 0", size_hint = [.5, 0.25], font_size = 30)
+#label = Label(text="Score: 0", size_hint = [.5, 0.25], size=(100, 150), font_size = 30)
 
-crosses_0_squares = GridLayout(cols=6, size_hint_y = None)
+crosses_0_squares = GridLayout(cols=6, size_hint = [1, 0.35])
 
 class TetrisApp(App):
-
-	def __init__(self, **kwargs):
-		super(TetrisApp, self).__init__(**kwargs)
 
 	def _on_keyboard_up(self, windowsinfo, key1, key2):
 		if key1 == 115 and hasattr(self, 'schedule'):
@@ -135,13 +140,17 @@ class TetrisApp(App):
 
 		self.stopplay = True
 
+		self.label = Label(text="Score: 0", size_hint = [.5, 0.25], font_size = 30)
+
 		wid = Widget()
+
+		#wid = ResizableRectangle(self.square)
 
 		with wid.canvas:
 			for x in range(200):
-				self.square.append([Color(0.5, 0.5, 0.5, 1, mode = "rgba"), Rectangle(pos=[(((x % 10) * squaresize1)) + (Window.size[0] / 2.65), (math.floor(x / 10) * squaresize1) + (Window.size[1] / 5)], size=(squaresize1, squaresize1))])
-				Color(0, 0, 0, 1)
-				Line(rectangle=(self.square[x][1].pos[0], self.square[x][1].pos[1], self.square[x][1].size[0], self.square[x][1].size[1]), width=1)
+				self.square.append([Color(0.5, 0.5, 0.5, 1, mode = "rgba"), Rectangle(pos=[((x % 10) * squaresize) * 1.1 + Window.width / 2.25, (math.floor(x / 10) * squaresize2) * 1.1  + Window.width / 4.5], size=(squaresize, squaresize2))])
+				#Color(0, 0, 0, 1)
+				#Line(rectangle=(self.square[x][1].pos[0], self.square[x][1].pos[1], self.square[x][1].size[0], self.square[x][1].size[1]), width=1)
 
 
 		#with wid.canvas:
@@ -153,7 +162,7 @@ class TetrisApp(App):
 		main_menu.add_widget(wid)
 
 		#print(dir(Button(text="321", on_press=self.tetrisleft)))
-		crosses_0_squares.add_widget(label)
+		crosses_0_squares.add_widget(self.label)
 		crosses_0_squares.add_widget(Button(text="<", size_hint = [.25, .5], on_press=self.tetrisleft))
 		crosses_0_squares.add_widget(Button(text=">", size_hint = [.25, .5], on_press=self.tetrisright))
 		crosses_0_squares.add_widget(Button(text="Transform", size_hint =  [.25, .5], on_press=self.transform))
@@ -224,7 +233,7 @@ class TetrisApp(App):
 			x[0].rgba = [0.5, 0.5, 0.5, 1]
 		
 		self.score = 0
-		label.text = "Score: " + str(self.score)
+		self.label.text = "Score: " + str(self.score)
 		self.xyeta = []
 		self.objecttetris = []
 		if hasattr(self, 'schedule'):
@@ -293,6 +302,41 @@ class TetrisApp(App):
 				result = False
 		return result
 
+	def checkdsadsa(self, test):
+		result = True
+		for x in self.xyeta:
+			#print(x)
+			if x[0] + 1 == test[0] - 10 and x[1] == test[1] and x[2] == test[2] and x[3] == test[3]:
+				#x[0] = x[0] + 10
+				if self.checkasddsaasddsa(x[0]):
+					#x[0] = x[0] + 10
+					result = False
+
+		#for x in self.xyeta:
+			#print(x)
+			if x[0] - 1 == test[0] and x[1] == test[1] and x[2] == test[2] and x[3] == test[3]:
+				if self.checkasddsaasddsa(x[0]):
+					result = False
+
+		return result
+
+	def checkasddsaasddsa(self, test):
+		#print(test)
+		result = 1
+		dsa = False
+		for x in self.xyeta:
+			#print(obj)
+			for x2 in obj["objcoord"][2][0]:
+				#print(x3)
+				#print(x2)
+				if test - 10 + x2 == x[0]:
+					result = result + 1
+
+		if result == 4:
+			dsa = True
+		result = 0
+		return dsa
+
 
 	def checkanddell(self):
 		count = {}
@@ -310,12 +354,11 @@ class TetrisApp(App):
 					for x in self.xyeta:
 						if x[0] == numberdell:
 							self.square[numberdell][0].rgba = [0.5, 0.5, 0.5, 1]
-							self.xyeta.pop(self.xyeta.index(x))		
-				
+							self.xyeta.pop(self.xyeta.index(x))
+
 				for _ in range(10):
-					for x in self.xyeta:	
+					for x in self.xyeta:	 # self.checkdsadsa(x) - переделать
 						if self.checkasdasd(x[0]) and x[0] - 10 >= 0:
-						#self.square[x[0] - 10][0].rgba = [1, 1, 1, 1]
 							self.square[x[0]][0].rgba = [0.5, 0.5, 0.5, 1]
 							x[0] = x[0] - 10
 
@@ -323,7 +366,7 @@ class TetrisApp(App):
 						self.square[x[0]][0].rgba = [x[1], x[2], x[3], 1]
 
 				self.score += 100
-				label.text = "Score: " + str(self.score)
+				self.label.text = "Score: " + str(self.score)
 				count[str(key)] = None
 
 				#for x in self.xyeta:
@@ -402,6 +445,7 @@ class TetrisApp(App):
 		#square[random.randint(190, 199)][0].rgba = [0, 0, 0, 1]
 		index = random.randint(183, 187)
 		idfigure = random.randint(0, len(obj["objcoord"]) - 1 - 12)
+		#idfigure = 3
 		intersects = False
 		if self.xyeta:
 			for x3 in obj["objcoord"][idfigure][0]:
